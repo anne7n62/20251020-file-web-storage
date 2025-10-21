@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="file" id="fileInput" multiple />
+
+    <div id="output"></div>
+
+    <script>
+      const input = document.getElementById("fileInput");
+      const output = document.getElementById("output");
+
+      // Tilføj en eventlistener der reagerer når filer vælges
+      input.addEventListener("change", () => {
+        const files = input.files; // FileList-objekt
+        output.innerHTML = ""; // Ryd tidligere indhold
+        console.log("files,", files);
+
+        // Hvis ingen filer valgt
+        if (files.length === 0) {
+          output.textContent = "Ingen filer valgt.";
+          return;
+        }
+
+        // Hvis én fil valgt → vis detaljer
+        if (files.length === 1) {
+          const file = files[0];
+          output.innerHTML = `
+          <h3>Filinformation:</h3>
+          <p><strong>Navn:</strong> ${file.name}</p>
+          <p><strong>Størrelse:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+          <p><strong>Type (MIME):</strong> ${file.type || "Ukendt"}</p>
+          <p><strong>Sidst ændret:</strong> ${new Date(
+            file.lastModified
+          ).toLocaleString()}</p>
+        `;
+        }
+        // Hvis flere filer valgt → vis antal og samlet størrelse
+        else {
+          let totalSize = 0;
+          for (const file of files) {
+            totalSize += file.size;
+          }
+
+          output.innerHTML = `
+          <h3>${files.length} filer valgt</h3>
+          <p>Samlet størrelse: ${(totalSize / 1024).toFixed(2)} KB</p>
+        `;
+        }
+      });
+    </script>
+  </body>
+</html>
