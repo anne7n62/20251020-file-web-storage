@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Filfremviser</title>
+  </head>
+  <body>
+    <h1>Filfremviser</h1>
+
+    <p>Vælg en fil for at se dens indhold:</p>
+    <input type="file" id="fileInput" />
+
+    <div id="output">Ingen fil valgt endnu.</div>
+
+    <script>
+      const input = document.getElementById("fileInput");
+      const output = document.getElementById("output");
+
+      input.addEventListener("change", () => {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const result = e.target.result;
+          output.innerHTML = ""; // ryd tidligere indhold
+
+          if (file.type.startsWith("image/")) {
+            const img = document.createElement("img");
+            img.src = result;
+            output.appendChild(img);
+          } else if (file.type === "application/pdf") {
+            // --- PDF håndtering ---
+            const iframe = document.createElement("iframe");
+            iframe.src = result;
+            iframe.width = "100%";
+            iframe.height = "600px";
+            output.appendChild(iframe);
+          } else if (
+            file.type.startsWith("text/") ||
+            file.name.endsWith(".txt") ||
+            file.type === "application/json"
+          ) {
+            const pre = document.createElement("pre");
+            pre.textContent = result;
+            output.appendChild(pre);
+          } else if (file.type.startsWith("audio/")) {
+            const audio = document.createElement("audio");
+            audio.src = result;
+            audio.controls = true;
+            output.appendChild(audio);
+          } else if (file.type.startsWith("video/")) {
+            const video = document.createElement("video");
+            video.src = result;
+            video.controls = true;
+            video.width = 400;
+            output.appendChild(video);
+          } else {
+            output.textContent = `Kan ikke vise denne filtype (${
+              file.type || "ukendt"
+            }).`;
+          }
+        };
+
+        // --- Hvordan filen skal læses ---
+        if (
+          file.type.startsWith("image/") ||
+          file.type.startsWith("audio/") ||
+          file.type.startsWith("video/") ||
+          file.type === "application/pdf"
+        ) {
+          reader.readAsDataURL(file); // bruges til medier og PDF’er
+        } else if (
+          file.type.startsWith("text/") ||
+          file.name.endsWith(".txt") ||
+          file.type === "application/json"
+        ) {
+          reader.readAsText(file); // tekstfiler
+        } else {
+          reader.readAsArrayBuffer(file); // fallback til binære filer
+        }
+      });
+    </script>
+  </body>
+</html>
