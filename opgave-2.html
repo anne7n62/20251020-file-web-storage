@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 id="hilsen"></h1>
+    <button id="sletNavn">Slet navn</button>
+    <script>
+      // Tjek om der allerede er gemt et navn i sessionStorage
+      let navn = sessionStorage.getItem("navn");
+
+      // Hvis ikke, så spørg brugeren
+      if (!navn) {
+        navn = prompt("Hvad er dit navn?");
+        // Gem navnet i sessionStorage
+        sessionStorage.setItem("navn", navn);
+      }
+
+      // Skriv "Hej [navn]" på siden
+      document.getElementById("hilsen").textContent = `Hej ${navn}!`;
+
+      // Gør det muligt at slette navnet
+      document.getElementById("sletNavn").addEventListener("click", () => {
+        sessionStorage.removeItem("navn");
+        document.getElementById("hilsen").textContent =
+          "Navn slettet. Genindlæs siden.";
+      });
+    </script>
+  </body>
+</html>
